@@ -10,7 +10,7 @@ void Delay(uint32_t nCount){
 }
 
 int main(){
-	LED_GPIO_Config();
+  LED_GPIO_Config();
   USART1_Config();
 	while(1){
 		LED1(ON);
@@ -18,5 +18,6 @@ int main(){
 		LED1(OFF);
 		Delay(0xFFFFFF);
 		printf("2");
+		
 	}
 }
