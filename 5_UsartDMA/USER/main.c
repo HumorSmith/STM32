@@ -16,7 +16,7 @@ int main(){
   LED_GPIO_Config();
   USART1_Config();
   DMA_Config();
-	/*Ìî³ä½«Òª·¢ËÍµÄÊý¾Ý,Ìî³äÍê´¥·¢ÖÐ¶Ï*/
+	/*å¼€å§‹æ•°æ®å¡«å……*/
   for(i=0;i<SENDBUFF_SIZE;i++)
   {
 		SendBuff[i]	 = 0xff;

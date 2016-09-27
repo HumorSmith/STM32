@@ -46,13 +46,14 @@ void USART1_Config(void)
     /* Enable USART1 global interrupt */
 }
 
-void NVIC_Config(void){
-	NVIC_InitTypeDef NVIC_InitStructure;
+static void NVIC_Config(void)
+{
+  NVIC_InitTypeDef NVIC_InitStructure;
   
   /* Configure one bit for preemption priority */
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
   
-  /* ÅäÖÃP[A|B|C|D|E]0ÎªÖĞ¶ÏÔ´ */
+  /* é…ç½®P[A|B|C|D|E]ä¸ºä¸­æ–­æº */
   NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel4_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
@@ -60,58 +61,52 @@ void NVIC_Config(void){
   NVIC_Init(&NVIC_InitStructure);
 }
 
-/*
- * º¯ÊıÃû£ºDMA_Config
- * ÃèÊö  £ºDMA ´®¿ÚµÄ³õÊ¼»¯ÅäÖÃ
- * ÊäÈë  £ºÎŞ
- * Êä³ö  : ÎŞ
- * µ÷ÓÃ  £ºÍâ²¿µ÷ÓÃ
- */
+
 void DMA_Config(void)
 {
     DMA_InitTypeDef DMA_InitStructure;
 
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);	//¿ªÆôDMAÊ±ÖÓ
-	NVIC_Config();	   			//ÅäÖÃDMAÖĞ¶Ï
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);	//å¼€å¯DMAæ—¶é’Ÿ
+	NVIC_Config();	   			//é…ç½®DMA
 
- 	/*ÉèÖÃDMAÔ´£ºÄÚ´æµØÖ·&´®¿ÚÊı¾İ¼Ä´æÆ÷µØÖ·*/
-    DMA_InitStructure.DMA_PeripheralBaseAddr = USART1_DR_Base;	   
+    /*è®¾ç½®DMAæº:å†…å­˜åœ°å€&ä¸²å£æ•°æ®å¯„å­˜å™¨åœ°å€*/
+  DMA_InitStructure.DMA_PeripheralBaseAddr = USART1_DR_Base;	   
 
-	/*ÄÚ´æµØÖ·(Òª´«ÊäµÄ±äÁ¿µÄÖ¸Õë)*/
+	/*å†…å­˜åœ°å€(è¦ä¼ è¾“å˜é‡çš„æŒ‡é’ˆ)*/  
     DMA_InitStructure.DMA_MemoryBaseAddr = (u32)SendBuff;
 	
-	/*·½Ïò£º´ÓÄÚ´æµ½ÍâÉè*/		
+	/*æ–¹å‘ï¼šä»å†…å­˜åˆ°å¤–è®¾*/
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;	
 	
-	/*´«Êä´óĞ¡DMA_BufferSize=SENDBUFF_SIZE*/	
+	/*ä¼ è¾“å¤§å°DMA_BufferSize=SENDBUFF_SIZE*/	
     DMA_InitStructure.DMA_BufferSize = SENDBUFF_SIZE;
 	
-	/*ÍâÉèµØÖ·²»Ôö*/	    
+	/*å¤–è®¾åœ°å€ä¸å¢*/	    
     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable; 
 	
-	/*ÄÚ´æµØÖ·×ÔÔö*/
+	/*å†…å­˜åœ°å€è‡ªå¢*/
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;	
 	
-	/*ÍâÉèÊı¾İµ¥Î»*/	
+	/*å†…å­˜æ•°æ®å•å…ƒ*/	
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
 	
-	/*ÄÚ´æÊı¾İµ¥Î» 8bit*/
+	/*å¤–è®¾æ•°æ®å•ä½*/
     DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;	 
 	
-	/*DMAÄ£Ê½£ºÒ»´Î´«Êä£¬Ñ­»·*/
+   /*DMAæ¨¡å¼ï¼Œä¸€æ¬¡ä¼ è¾“ï¼Œå¾ªç¯*/
     DMA_InitStructure.DMA_Mode = DMA_Mode_Normal ;	 
 	
-	/*ÓÅÏÈ¼¶£ºÖĞ*/	
+	/*ä¼˜å…ˆçº§ä¸­*/	
     DMA_InitStructure.DMA_Priority = DMA_Priority_Medium;  
 	
-	/*½ûÖ¹ÄÚ´æµ½ÄÚ´æµÄ´«Êä	*/
+	/*ç¦æ­¢å†…å­˜åˆ°å†…å­˜çš„ä¼ è¾“	*/
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
 	
-	/*ÅäÖÃDMA1µÄ4Í¨µÀ*/		   
+	/*é…ç½®DMA1çš„4é€šé“*/		   
     DMA_Init(DMA1_Channel4, &DMA_InitStructure); 	   
 	
-		DMA_Cmd (DMA1_Channel4,ENABLE);					//Ê¹ÄÜDMA
-		DMA_ITConfig(DMA1_Channel4,DMA_IT_TC,ENABLE);  //ÅäÖÃDMA·¢ËÍÍê³Éºó²úÉúÖĞ¶Ï
+		DMA_Cmd (DMA1_Channel4,ENABLE);					//ä½¿èƒ½DMA
+		DMA_ITConfig(DMA1_Channel4,DMA_IT_TC,ENABLE);  //é…ç½®DMAå‘é€å®Œæˆåäº§ç”Ÿä¸­æ–­
 
 }
 
